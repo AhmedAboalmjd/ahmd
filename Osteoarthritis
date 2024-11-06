@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Osteoarthritis Quiz Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+        }
+        #quiz-container {
+            max-width: 600px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        .question {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .option {
+            padding: 10px 20px;
+            margin: 5px;
+            background-color: #e0e0e0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            max-width: 250px;
+            transition: background-color 0.3s;
+        }
+        .option.correct {
+            background-color: #8BC34A; /* green */
+            color: white;
+        }
+        .option.incorrect {
+            background-color: #F44336; /* red */
+            color: white;
+        }
+        .score {
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="quiz-container">
+    <h1>Osteoarthritis Quiz</h1>
+    <p class="question"></p>
+    <div class="options">
+        <button class="option" onclick="checkAnswer(0)"></button>
+        <button class="option" onclick="checkAnswer(1)"></button>
+        <button class="option" onclick="checkAnswer(2)"></button>
+        <button class="option" onclick="checkAnswer(3)"></button>
+    </div>
+    <div class="score"></div>
+</div>
+
+<script>
+    const questions = [
+        {
+            question: "What type of disease is osteoarthritis?",
+            options: ["Degenerative joint disease", "Infectious disease", "Autoimmune disease", "Congenital disease"],
+            answer: 0
+        },
+        {
+            question: "Which age group is most commonly affected by osteoarthritis?",
+            options: ["Under 20", "20-40", "Over 60", "All ages equally"],
+            answer: 2
+        },
+        {
+            question: "Which joint is most commonly affected by osteoarthritis?",
+            options: ["Hip", "Shoulder", "Knee", "Elbow"],
+            answer: 2
+        },
+        {
+            question: "Which of the following is a primary symptom of osteoarthritis?",
+            options: ["High fever", "Joint pain", "Weight gain", "Severe fatigue"],
+            answer: 1
+        },
+        {
+            question: "Which type of osteoarthritis has an unknown cause?",
+            options: ["Primary", "Secondary", "Tertiary", "Congenital"],
+            answer: 0
+        },
+        {
+            question: "Which imaging technique is commonly used to diagnose osteoarthritis?",
+            options: ["MRI", "X-ray", "Ultrasound", "CT scan"],
+            answer: 1
+        },
+        {
+            question: "What lifestyle change can help manage osteoarthritis symptoms?",
+            options: ["Increasing weight", "Sedentary lifestyle", "Weight control", "Avoiding exercise"],
+            answer: 2
+        },
+        {
+            question: "Which medication is often used to relieve osteoarthritis pain?",
+            options: ["Antibiotics", "NSAIDs", "Antidepressants", "Antihistamines"],
+            answer: 1
+        },
+        {
+            question: "What is the primary cause of joint space narrowing in osteoarthritis?",
+            options: ["Loss of cartilage", "Bone fracture", "Ligament damage", "Increased synovial fluid"],
+            answer: 0
+        },
+        {
+            question: "Which symptom is commonly associated with osteoarthritis in the morning?",
+            options: ["Severe pain lasting hours", "Swelling", "Stiffness lasting less than 30 minutes", "Redness and warmth"],
+            answer: 2
+        },
+        {
+            question: "What is the main goal of osteoarthritis treatment?",
+            options: ["Complete cure", "Pain relief and function preservation", "Bone regrowth", "Joint immobilization"],
+            answer: 1
+        },
+        {
+            question: "Which joint replacement surgery is common for severe osteoarthritis?",
+            options: ["Spinal fusion", "Total hip replacement", "Skull reconstruction", "Shoulder arthrodesis"],
+            answer: 1
+        },
+        {
+            question: "Which factor can increase the risk of osteoarthritis?",
+            options: ["Excessive weight", "Daily stretching", "Vegan diet", "High protein intake"],
+            answer: 0
+        },
+        {
+            question: "What structural feature forms around the affected joint in osteoarthritis?",
+            options: ["Bone cysts", "Bone spurs", "Extra muscles", "Calcium deposits"],
+            answer: 1
+        },
+        {
+            question: "Which activity is recommended for people with osteoarthritis?",
+            options: ["High-impact sports", "Water-based exercises", "Running long distances", "Jumping exercises"],
+            answer: 1
+        }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    function loadQuestion() {
+        if (currentQuestion >= questions.length) {
+            document.querySelector(".question").innerText = "Quiz completed!";
+            document.querySelector(".score").innerText = `Final Score: ${score} / ${questions.length}`;
+            document.querySelector(".options").style.display = "none";
+            return;
+        }
+
+        const questionData = questions[currentQuestion];
+        document.querySelector(".question").innerText = questionData.question;
+        document.querySelectorAll(".option").forEach((button, index) => {
+            button.innerText = questionData.options[index];
+            button.className = "option"; // Reset button classes
+            button.disabled = false;     // Enable buttons for next question
+        });
+    }
+
+    function checkAnswer(selected) {
+        const questionData = questions[currentQuestion];
+        const buttons = document.querySelectorAll(".option");
+
+        if (selected === questionData.answer) {
+            buttons[selected].classList.add("correct");
+            score++;
+        } else {
+            buttons[selected].classList.add("incorrect");
+            buttons[questionData.answer].classList.add("correct");
+        }
+
+        // Disable all buttons to prevent multiple clicks
+        buttons.forEach(button => button.disabled = true);
+
+        // Move to the next question after a brief delay
+        setTimeout(() => {
+            currentQuestion++;
+            loadQuestion();
+        }, 1000); // 1 second delay
+    }
+
+    loadQuestion();
+</script>
+
+</body>
+</html>
